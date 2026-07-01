@@ -118,31 +118,32 @@ function orangeLabel(slide: PptxGenJS.Slide, x: number, y: number, w: number, h:
 function renderCover(prs: PptxGenJS, plan: SlidePlan) {
   const slide = prs.addSlide()
   const c = plan.content as { clientName?: string; period?: string }
-  const bg = slidePng('cover.png')
 
-  if (bg) {
-    slide.addImage({ path: bg, x: 0, y: 0, w: W, h: H })
-    // Cover the baked-in "CURSIVA" + period text with a navy rectangle
-    slide.addShape('rect', { x: 0.48, y: 3.78, w: 5.5, h: 0.96,
-      fill: { color: C.navy }, line: { color: C.navy } })
-    // Overlay real client name
-    slide.addText(c.clientName || '', {
-      x: 0.56, y: 3.82, w: 5.2, h: 0.42,
-      ...font(14, false, C.white), align: 'left', valign: 'middle',
-    })
-    // Overlay real period
-    slide.addText(`${c.period || ''}  -  Realizado por: PCH Consultora`, {
-      x: 0.56, y: 4.28, w: 8, h: 0.36,
-      ...font(11, false, C.white), align: 'left', valign: 'middle',
-    })
-  } else {
-    darkBg(slide)
-    slide.addText('▷ PCH', { x: 0.5, y: 0.35, w: 2.5, h: 0.5, ...font(18, true, C.white) })
-    slide.addShape('rect', { x: 0.5, y: 1.9, w: 3.2, h: 0.55, fill: { color: C.lime }, line: { color: C.lime }, rectRadius: 0.06 })
-    slide.addText('Diagnóstico', { x: 0.6, y: 1.92, w: 3.0, h: 0.51, ...font(22, true), align: 'left', valign: 'middle' })
-    slide.addText(c.clientName || '', { x: 0.5, y: 2.55, w: 7, h: 0.8, ...font(32, false, C.white), align: 'left', valign: 'top' })
-    slide.addText(`${c.period || ''} — Realizado por: PCH Consultora`, { x: 0.5, y: 4.8, w: 8, h: 0.4, ...font(11, false, C.slate), align: 'left' })
-  }
+  // Dark navy background with diagonal decorative strips (matching template)
+  darkBg(slide)
+
+  // PCH logo area (top-left)
+  slide.addText('▷ PCH', {
+    x: 0.42, y: 0.32, w: 3.5, h: 0.65,
+    ...font(26, true, C.white), align: 'left', valign: 'middle',
+  })
+
+  // Client name box — lime background like template
+  const name = c.clientName || ''
+  slide.addShape('rect', {
+    x: 0.42, y: 2.9, w: 5.8, h: 0.72,
+    fill: { color: C.lime }, line: { color: C.lime }, rectRadius: 0.06,
+  })
+  slide.addText(name, {
+    x: 0.55, y: 2.92, w: 5.6, h: 0.68,
+    ...font(22, true, C.navy), align: 'left', valign: 'middle',
+  })
+
+  // Period + realizador
+  slide.addText(`${c.period || ''}  ·  Realizado por: PCH Consultora`, {
+    x: 0.42, y: 3.74, w: 8.5, h: 0.38,
+    ...font(12, false, C.light), align: 'left', valign: 'middle',
+  })
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -181,13 +182,16 @@ function renderSectionDivider(prs: PptxGenJS, plan: SlidePlan) {
 
   // Two stacked orange boxes when sublabel present, one box otherwise
   if (sublabel) {
-    const box1W = Math.min(label.length * 0.165 + 0.6, 8.5)
-    const box2W = Math.min(sublabel.length * 0.165 + 0.6, 8.5)
-    orangeLabel(slide, 0.5, 2.2, box1W, 0.62, label)
-    orangeLabel(slide, 0.5, 2.92, box2W, 0.62, sublabel)
+    const box1W = Math.min(label.length * 0.19 + 0.8, 8.5)
+    const box2W = Math.min(sublabel.length * 0.19 + 0.8, 8.5)
+    slide.addShape('rect', { x: 0.5, y: 2.0, w: box1W, h: 0.72, fill: { color: C.orange }, line: { color: C.orange }, rectRadius: 0.06 })
+    slide.addText(label, { x: 0.5, y: 2.0, w: box1W, h: 0.72, ...font(18, true, C.white), align: 'center', valign: 'middle' })
+    slide.addShape('rect', { x: 0.5, y: 2.82, w: box2W, h: 0.72, fill: { color: C.orange }, line: { color: C.orange }, rectRadius: 0.06 })
+    slide.addText(sublabel, { x: 0.5, y: 2.82, w: box2W, h: 0.72, ...font(18, true, C.white), align: 'center', valign: 'middle' })
   } else {
-    const labelW = Math.min(label.length * 0.165 + 0.6, 8.5)
-    orangeLabel(slide, 0.5, 2.38, labelW, 0.62, label)
+    const labelW = Math.min(label.length * 0.19 + 0.8, 8.5)
+    slide.addShape('rect', { x: 0.5, y: 2.3, w: labelW, h: 0.82, fill: { color: C.orange }, line: { color: C.orange }, rectRadius: 0.06 })
+    slide.addText(label, { x: 0.5, y: 2.3, w: labelW, h: 0.82, ...font(20, true, C.white), align: 'center', valign: 'middle' })
   }
 }
 
