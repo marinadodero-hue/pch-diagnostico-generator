@@ -8,9 +8,19 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['var(--font-montserrat)', 'sans-serif'],
+      },
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        pch: {
+          navy:    '#011533',
+          mid:     '#2c3850',
+          light:   '#cfdef5',
+          lime:    '#e0fcad',
+          orange:  '#fe572a',
+          blue:    '#bce4fe',
+          slate:   '#6b7a8d',
+        },
       },
     },
   },
