@@ -199,7 +199,7 @@ function renderSectionDivider(prs: PptxGenJS, plan: SlidePlan) {
 function renderIntroColumns(prs: PptxGenJS, plan: SlidePlan) {
   const slide = prs.addSlide()
   lightBg(slide)
-  const c = plan.content as { columns?: { title: string; items: string[] }[]; duration?: string }
+  const c = plan.content as { columns?: { title: string; subtitle?: string; items: string[] }[]; duration?: string }
   const cols = c.columns || []
 
   // Vertical orange divider at center
@@ -208,10 +208,13 @@ function renderIntroColumns(prs: PptxGenJS, plan: SlidePlan) {
   cols.forEach((col, i) => {
     const x = i === 0 ? 0.32 : 5.1
     const w = 4.45
-    // Column title with lime box + orange underline (like lightHeader but inline)
+
+    // Column title — lime box
     const titleW = Math.min(col.title.length * 0.125 + 0.3, w)
     slide.addShape('rect', { x, y: 0.28, w: titleW, h: 0.44, fill: { color: C.lime }, line: { color: C.lime }, rectRadius: 0.04 })
     slide.addText(col.title, { x: x + 0.06, y: 0.3, w: titleW - 0.08, h: 0.42, ...font(16, true), align: 'left', valign: 'middle' })
+
+    // Orange underline with dot
     const lineY = 0.86
     slide.addShape('ellipse', { x, y: lineY - 0.045, w: 0.09, h: 0.09, fill: { color: C.orange }, line: { color: C.orange } })
     slide.addShape('rect', { x: x + 0.09, y: lineY, w: w - 0.09, h: 0.018, fill: { color: C.orange }, line: { color: C.orange } })
@@ -219,15 +222,24 @@ function renderIntroColumns(prs: PptxGenJS, plan: SlidePlan) {
     // Gray card
     slide.addShape('rect', { x, y: 1.06, w, h: 4.22, fill: { color: C.slate }, line: { color: C.slate }, rectRadius: 0.14 })
 
-    // Icon circle + card title (first item treated as subtitle if col has icon)
-    slide.addShape('ellipse', { x: x + 0.15, y: 1.18, w: 0.55, h: 0.55, fill: { color: C.navy }, line: { color: C.navy } })
-    slide.addText('✦', { x: x + 0.15, y: 1.18, w: 0.55, h: 0.55, ...font(14, false, C.lime), align: 'center', valign: 'middle' })
+    // Icon circle (navy with + symbol, matching template)
+    slide.addShape('ellipse', { x: x + 0.18, y: 1.16, w: 0.52, h: 0.52, fill: { color: C.navy }, line: { color: C.navy } })
+    slide.addText('+', { x: x + 0.18, y: 1.16, w: 0.52, h: 0.52, ...font(18, true, C.white), align: 'center', valign: 'middle' })
 
-    // Items as bullet text in card
+    // Subtitle in orange next to icon (if present)
+    const subtitle = col.subtitle || ''
+    if (subtitle) {
+      slide.addText(subtitle, {
+        x: x + 0.78, y: 1.16, w: w - 0.9, h: 0.52,
+        ...font(13, true, C.orange), align: 'left', valign: 'middle', wrap: true,
+      })
+    }
+
+    // Bullet items
     const bullets = col.items.map(it => `• ${it}`).join('\n')
     slide.addText(bullets, {
       x: x + 0.14, y: 1.82, w: w - 0.28, h: 3.34,
-      ...font(11, false, C.white), align: 'left', valign: 'top', wrap: true, lineSpacingMultiple: 1.25,
+      ...font(11, false, C.white), align: 'left', valign: 'top', wrap: true, lineSpacingMultiple: 1.3,
     })
   })
 }

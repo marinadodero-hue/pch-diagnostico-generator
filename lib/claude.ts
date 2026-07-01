@@ -1,4 +1,4 @@
-import Anthropic from '@anthropic-ai/sdk'
+﻿import Anthropic from '@anthropic-ai/sdk'
 import { DiagnosticAnalysis, SlidePlan } from './slideTypes'
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
@@ -31,37 +31,37 @@ export async function analyzeDiagnostic(
     ? references.slice(0, 5).join('\n\n---\n\n')
     : '(sin material de referencia cargado)'
 
-  const systemPrompt = `Sos un consultor experto de PCH Consultora especializado en diagnósticos organizacionales de pymes argentinas.
-Tu tarea es analizar un texto de diagnóstico (que puede estar bien o mal estructurado, o ser notas dispersas) y extraer toda la información necesaria para armar una presentación profesional.
+  const systemPrompt = `Sos un consultor experto de PCH Consultora especializado en diagnÃ³sticos organizacionales de pymes argentinas.
+Tu tarea es analizar un texto de diagnÃ³stico (que puede estar bien o mal estructurado, o ser notas dispersas) y extraer toda la informaciÃ³n necesaria para armar una presentaciÃ³n profesional.
 
 CONTEXTO DE PCH:
-PCH se dedica a profesionalizar pymes. Sus diagnósticos tienen foco en procesos, diseño organizacional, estrategia, y plan de trabajo. El tono es profesional, directo y empático. Nunca paniquea al cliente: nombra los problemas con claridad pero siempre orientado a la mejora.
+PCH se dedica a profesionalizar pymes. Sus diagnÃ³sticos tienen foco en procesos, diseÃ±o organizacional, estrategia, y plan de trabajo. El tono es profesional, directo y empÃ¡tico. Nunca paniquea al cliente: nombra los problemas con claridad pero siempre orientado a la mejora.
 
-MATERIAL DE REFERENCIA (diagnósticos y presentaciones anteriores de PCH):
+MATERIAL DE REFERENCIA (diagnÃ³sticos y presentaciones anteriores de PCH):
 ${refSection}
 
-INSTRUCCIONES DE EXTRACCIÓN:
-1. Leé primero las NOTAS DEL CONSULTOR — son instrucciones de mayor jerarquía
-2. Extraé todos los hallazgos, situaciones, citas y propuestas del texto
-3. Identificá qué ejes temáticos están presentes (estrategia, procesos, organización, comunicación, datos, RRHH, etc.)
-4. Identificá si hay una cadena de proceso con fallas secuenciales
-5. Extraé citas textuales de entrevistados (entre comillas), preservándolas exactamente
-6. Identificá puntos de apalancamiento o fortalezas mencionadas
-7. Si hay plan de acción: extraelo. Si no hay: generá uno coherente y marcalo con "(propuesta PCH)"
-8. NO inventés hallazgos. Si algo no está en el texto, no lo incluyas.
+INSTRUCCIONES DE EXTRACCIÃ“N:
+1. LeÃ© primero las NOTAS DEL CONSULTOR â€” son instrucciones de mayor jerarquÃ­a
+2. ExtraÃ© todos los hallazgos, situaciones, citas y propuestas del texto
+3. IdentificÃ¡ quÃ© ejes temÃ¡ticos estÃ¡n presentes (estrategia, procesos, organizaciÃ³n, comunicaciÃ³n, datos, RRHH, etc.)
+4. IdentificÃ¡ si hay una cadena de proceso con fallas secuenciales
+5. ExtraÃ© citas textuales de entrevistados (entre comillas), preservÃ¡ndolas exactamente
+6. IdentificÃ¡ puntos de apalancamiento o fortalezas mencionadas
+7. Si hay plan de acciÃ³n: extraelo. Si no hay: generÃ¡ uno coherente y marcalo con "(propuesta PCH)"
+8. NO inventÃ©s hallazgos. Si algo no estÃ¡ en el texto, no lo incluyas.
 
-Respondé ÚNICAMENTE con JSON válido (sin markdown, sin texto adicional, sin bloques de código).`
+RespondÃ© ÃšNICAMENTE con JSON vÃ¡lido (sin markdown, sin texto adicional, sin bloques de cÃ³digo).`
 
-  const userMessage = `NOTAS DEL CONSULTOR (respetar como prioridad sobre cualquier otra decisión):
+  const userMessage = `NOTAS DEL CONSULTOR (respetar como prioridad sobre cualquier otra decisiÃ³n):
 ${consultantNotes || '(sin notas adicionales)'}
 
 NOMBRE DEL CLIENTE: ${clientName || '(a detectar del texto)'}
-PERÍODO: ${period || '(a detectar del texto)'}
+PERÃODO: ${period || '(a detectar del texto)'}
 
 CONTEXTO DEL CLIENTE:
 ${clientContext || '(sin contexto adicional)'}
 
-TEXTO DEL DIAGNÓSTICO:
+TEXTO DEL DIAGNÃ“STICO:
 ${processedText}`
 
   const response = await client.messages.create({
@@ -76,14 +76,14 @@ ${processedText}`
 
   if (response.stop_reason === 'max_tokens') {
     console.error('Claude analysis was cut off. Response length:', text.length)
-    throw new Error('El diagnóstico es demasiado largo. Reducí el texto o dividilo en partes.')
+    throw new Error('El diagnÃ³stico es demasiado largo. ReducÃ­ el texto o dividilo en partes.')
   }
 
   try {
     return JSON.parse(cleaned) as DiagnosticAnalysis
   } catch {
     console.error('Claude analysis JSON parse error. Raw response:', text.slice(0, 500))
-    throw new Error('Claude devolvió una respuesta inválida. Intentá de nuevo.')
+    throw new Error('Claude devolviÃ³ una respuesta invÃ¡lida. IntentÃ¡ de nuevo.')
   }
 }
 
@@ -91,8 +91,8 @@ export async function planSlides(
   analysis: DiagnosticAnalysis,
   consultantNotes: string
 ): Promise<SlidePlan[]> {
-  const systemPrompt = `Sos un diseñador de presentaciones ejecutivas para PCH Consultora.
-Recibís un análisis estructurado de un diagnóstico y tenés que decidir exactamente qué slides generar, en qué orden, y con qué formato visual. Tu output se convierte directamente en una presentación de Google Slides.
+  const systemPrompt = `Sos un diseÃ±ador de presentaciones ejecutivas para PCH Consultora.
+RecibÃ­s un anÃ¡lisis estructurado de un diagnÃ³stico y tenÃ©s que decidir exactamente quÃ© slides generar, en quÃ© orden, y con quÃ© formato visual. Tu output se convierte directamente en una presentaciÃ³n de Google Slides.
 
 TIPOS DE SLIDES DISPONIBLES:
 cover, section_divider, rules, intro_columns, method_card, bullet_list_rounded,
@@ -103,55 +103,55 @@ next_steps, closing
 SLIDES OBLIGATORIAS (siempre aparecen en este orden fijo):
 1. cover
 2. rules
-3. section_divider (Introducción)
+3. section_divider (IntroducciÃ³n)
 4. intro_columns
 5. method_card
 6. bullet_list_rounded (acerca de los entrevistados)
-[si hay citas] → quotes_grid
-section_divider (Diagnóstico: Situaciones detectadas)
-bullet_list_rounded (síntomas iniciales / expectativas)
---- BLOQUE DE NARRATIVA LIBRE (decidís vos según el patrón sugerido) ---
-[si hay leverage points] → leverage_points
+[si hay citas] â†’ quotes_grid
+section_divider (DiagnÃ³stico: Situaciones detectadas)
+bullet_list_rounded (sÃ­ntomas iniciales / expectativas)
+--- BLOQUE DE NARRATIVA LIBRE (decidÃ­s vos segÃºn el patrÃ³n sugerido) ---
+[si hay leverage points] â†’ leverage_points
 section_divider (Ejes de trabajo / Propuestas)
 action_plan_gantt
-[si hasPhase2] → bullet_list_rounded (Iniciativas Fase 2)
+[si hasPhase2] â†’ bullet_list_rounded (Iniciativas Fase 2)
 next_steps
 closing
 
-REGLAS DE ASIGNACIÓN DE TIPO DE SLIDE:
-- Cadena de pasos con problemas en cada etapa → value_chain
-- Situaciones + propuestas claramente diferenciadas → situation_improvement
-- Citas textuales de entrevistados → quotes_grid
-- Definición de un concepto con valor para la audiencia → concept_definition
-- Fortalezas detectadas / puntos positivos → leverage_points
-- Lista de 4-7 problemas sin estructura causa-efecto → bullet_list_rounded
-- Dos perspectivas contrapuestas → two_column_analysis
-- Hallazgo central muy fuerte → highlight_statement
-- Mapa de procesos por área/nivel → process_map
+REGLAS DE ASIGNACIÃ“N DE TIPO DE SLIDE:
+- Cadena de pasos con problemas en cada etapa â†’ value_chain
+- Situaciones + propuestas claramente diferenciadas â†’ situation_improvement
+- Citas textuales de entrevistados â†’ quotes_grid
+- DefiniciÃ³n de un concepto con valor para la audiencia â†’ concept_definition
+- Fortalezas detectadas / puntos positivos â†’ leverage_points
+- Lista de 4-7 problemas sin estructura causa-efecto â†’ bullet_list_rounded
+- Dos perspectivas contrapuestas â†’ two_column_analysis
+- Hallazgo central muy fuerte â†’ highlight_statement
+- Mapa de procesos por Ã¡rea/nivel â†’ process_map
 
-LÍMITES DUROS:
-- Máximo 120 palabras por slide de contenido
-- Si hay más de 6 bullets, dividir en dos slides del mismo tipo
-- No usar el mismo tipo de slide más de 3 veces seguidas
+LÃMITES DUROS:
+- MÃ¡ximo 120 palabras por slide de contenido
+- Si hay mÃ¡s de 6 bullets, dividir en dos slides del mismo tipo
+- No usar el mismo tipo de slide mÃ¡s de 3 veces seguidas
 
-NOTAS DEL CONSULTOR A RESPETAR (prioridad máxima):
+NOTAS DEL CONSULTOR A RESPETAR (prioridad mÃ¡xima):
 ${consultantNotes || '(sin notas)'}
 
-Respondé ÚNICAMENTE con un array JSON válido (sin markdown, sin texto adicional).
+RespondÃ© ÃšNICAMENTE con un array JSON vÃ¡lido (sin markdown, sin texto adicional).
 Cada elemento del array debe tener esta forma exacta:
 {
   "type": "SlideType",
   "sectionLabel": "string o null",
   "title": "string o null",
-  "content": { ... campos específicos del tipo ... },
+  "content": { ... campos especÃ­ficos del tipo ... },
   "designNotes": "string breve"
 }
 
 Para cada tipo de slide, los campos de "content" son:
 - cover: { "clientName": string, "period": string }
-- section_divider: { "label": string, "sublabel": string|null }  // Usar sublabel cuando el título tiene dos partes (ej label:"Diagnóstico:" sublabel:"Situaciones detectadas"). Para separadores simples de una línea (ej "Introducción"), sublabel=null.
+- section_divider: { "label": string, "sublabel": string|null }  // Usar sublabel cuando el tÃ­tulo tiene dos partes (ej label:"DiagnÃ³stico:" sublabel:"Situaciones detectadas"). Para separadores simples de una lÃ­nea (ej "IntroducciÃ³n"), sublabel=null.
 - rules: { "rules": [{ "icon": string, "text": string }] }
-- intro_columns: { "columns": [{ "title": string, "items": [string] }], "duration": string }
+- intro_columns: { "columns": [{ "title": string, "subtitle": string, "items": [string] }], "duration": string }  // subtitle = etiqueta naranja dentro del card (ej: "Síntomas", "Encuestas y entrevistas")
 - method_card: { "icon": string, "title": string, "description": string }
 - bullet_list_rounded: { "title": string, "items": [string] }
 - quotes_grid: { "title": string, "quotes": [string] }
@@ -172,7 +172,7 @@ Para cada tipo de slide, los campos de "content" son:
     system: systemPrompt,
     messages: [{
       role: 'user',
-      content: `ANÁLISIS DEL DIAGNÓSTICO:\n${JSON.stringify(analysis, null, 2)}`
+      content: `ANÃLISIS DEL DIAGNÃ“STICO:\n${JSON.stringify(analysis, null, 2)}`
     }],
   })
 
