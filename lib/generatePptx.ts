@@ -108,6 +108,7 @@ function circle(slide: PptxGenJS.Slide, x: number, y: number, d: number, label: 
 }
 
 /** Orange label rectangle (used in dark slides) */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function orangeLabel(slide: PptxGenJS.Slide, x: number, y: number, w: number, h: number, text: string) {
   slide.addShape('rect', { x, y, w, h, fill: { color: C.orange }, line: { color: C.orange }, rectRadius: 0.06 })
   slide.addText(text, { x, y, w, h, ...font(13, true, C.white), align: 'center', valign: 'middle' })
